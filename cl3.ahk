@@ -1280,3 +1280,99 @@ Else
 ;@Ahk2Exe-IgnoreBegin
 #Include *i %A_ScriptDir%\plugins\ClipboardPrivateRules.ahk
 ;@Ahk2Exe-IgnoreEnd
+
+SendMode Input  ; 
+SetWorkingDir %A_ScriptDir%  ;
+SetTitleMatchMode 2
+;RCtrl & v:: !#^+v
+;TODO M595只有滚轮右侧出出发下一行 而
+;WheelRight::return ToolTip, WheelRight 可用
+;WheelLeft::	ToolTip, WheelLeft 可用
+/*#Include C:\Users\xujiazhe\Desktop\Translation-Terminator\Lib\BaiduTranslator.ahk
+BaiduTranslator.init()                        ; 初始化接口
+WheelRight::
+	; Translate text from Japanese to English.	\
+	Tooltip,  开始 百度 翻译 
+	;MsgBox, % BaiduTranslator.translate("今日の天気はとても良いです", "ja", "en")
+	
+	CL3Api_State("off")
+	Send, ^c
+	Sleep 100
+	
+	MsgBox, % BaiduTranslator.translate(Clipboard)
+	CL3Api_State("on")
+	
+	;BaiduTranslator.free()
+	;ExitApp
+	return
+	ul.ng-tns-c20-16.ng-star-inserted
+*/
+RCtrl & `:: 
+	Reload
+	return
+MButton::
+	CL3Api_State("off")
+	Send, ^c
+	Sleep 100
+	Send, {MButton}
+	CL3Api_State("on")
+	return
+
+RCtrl & g::
+	CL3Api_State("off")
+	Send, ^c
+	Sleep, 400
+	Send, ^+!#g
+	CL3Api_State("on")
+	return
+	
+EncodeDecodeURI(str, encode := true, component := true) {
+   static Doc, JS
+   if !Doc {
+      Doc := ComObjCreate("htmlfile")
+      Doc.write("<meta http-equiv=""X-UA-Compatible"" content=""IE=9"">")
+      JS := Doc.parentWindow
+      ( Doc.documentMode < 9 && JS.execScript() )
+   }
+   Return JS[ (encode ? "en" : "de") . "codeURI" . (component ? "Component" : "") ](str)
+}
+
+>^t::
+	;TODO yt?关键词
+	CL3Api_State("off")
+	Send, ^c
+	Sleep 100
+	q_str := EncodeDecodeURI(clipboard)
+	run "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" https://www.google.com/search?q=%q_str% , Max
+	;TODO 两次点击
+	CL3Api_State("on")
+	return
+
+;CapsLock & t:: Run Powershell
+;汇总
+;https://github.com/ahkscript/awesome-AutoHotkey
+;https://www.downza.cn/soft/317706.html
+;交换alt和ctrl   	Ubuntu下 https://blog.csdn.net/ruoshuixx/article/details/130267984
+
+;<^#t:
+
+;Run "C:\Program Files\Google\Chrome\Application\chrome.exe" --profile-directory="Profile 1"
+
+;Space::  return
+/*Space Up:: 
+	if (A_PriorKey = "Space" AND A_TimeSincePriorHotkey < 125)
+    {
+        Send {Space}
+    }
+    return
+*/
+RCtrl & h::
+	ToolTip, %ClipboardHistoryToggle%
+	 CL3Api_State(ClipboardHistoryToggle)
+;	 Menu, Tray, ToggleCheck, &Pause clipboard history
+	 If ClipboardHistoryToggle
+		Menu, Tray, Icon, res\cl3.ico
+	 else
+		Menu, Tray, Icon, res\cl3_clipboard_history_paused.ico
+	 ClipboardHistoryToggle:=!ClipboardHistoryToggle
+	 return
